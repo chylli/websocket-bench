@@ -18,6 +18,7 @@ program
   .option('-t, --type <type>', 'type of websocket server to bench(socket.io, engine.io, faye, primus, wamp, websocket). Default to io')
   .option('-p, --transport <type>', 'type of transport to websocket(engine.io, websockets, browserchannel, sockjs, socket.io). Default to websockets')
   .option('-k, --keep-alive', 'Keep alive connection')
+  .option('-u, --warm-time <n>', 'Warm up time. Default to 0', parseInt)
   .option('-v, --verbose', 'Verbose Logging')
   .parse(process.argv);
 
@@ -28,6 +29,11 @@ if (program.args.length < 1) {
 var server = program.args[0];
 
 // Set default value
+
+if (!program.warmTime) {
+    program.warmTime = 0;
+}
+
 if (!program.worker) {
   program.worker = 1;
 }
@@ -116,5 +122,7 @@ process.on('SIGINT', function () {
 
 });
 
-bench.launch(program.amount, program.concurency, program.worker, program.message, program.keepAlive);
+
+bench.start(program.amount, program.concurency, program.worker, program.message, program.keepAlive, program.warmMessage);
+
 
