@@ -123,6 +123,6 @@ process.on('SIGINT', function () {
 });
 
 
-bench.start(program.amount, program.concurency, program.worker, program.message, program.keepAlive, program.warmMessage);
+bench.start(program.amount, program.concurency, program.worker, program.message, program.warmTime);
 
 
