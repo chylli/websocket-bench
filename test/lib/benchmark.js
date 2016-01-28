@@ -55,7 +55,7 @@ describe('Benchmark', function () {
         };
         it('should call launch 1 time',function(done){
             var stubFork = sinon.stub(cp, 'fork', function(){console.log('fork!');return new MyEmitter();});
-            var stubSetTimeout = sinon.stub(global, 'setTimeout', function(fn){console.log('timeout!');fn()});
+            var stubSetTimeout = sinon.stub(global, 'setTimeout', function(fn){fn()});
             var spyWarm = sinon.spy(Benchmark.prototype, 'warm');
             var launchCounter = 0;
             var stubLaunch;
@@ -67,7 +67,7 @@ describe('Benchmark', function () {
                 stubLaunch.restore();
             };
 
-            stubLaunch = sinon.stub(Benchmark.prototype, 'launch',function(){console.log('launch called');launchCounter++; done()});
+            stubLaunch = sinon.stub(Benchmark.prototype, 'launch',function(){launchCounter++; done()});
             benchmark.start(1,1,1,1,5);
             assert.equal(launchCounter,1);
             restore();
@@ -75,7 +75,7 @@ describe('Benchmark', function () {
 
         it('should call warm 6 time',function(done){
             var stubFork = sinon.stub(cp, 'fork', function(){console.log('fork!');return new MyEmitter();});
-            var stubSetTimeout = sinon.stub(global, 'setTimeout', function(fn){console.log('timeout!');fn()});
+            var stubSetTimeout = sinon.stub(global, 'setTimeout', function(fn){fn()});
             var spyWarm = sinon.spy(Benchmark.prototype, 'warm');
             var launchCounter = 0;
             var stubLaunch;
@@ -87,7 +87,7 @@ describe('Benchmark', function () {
                 stubLaunch.restore();
             };
 
-            stubLaunch = sinon.stub(Benchmark.prototype, 'launch',function(){console.log('launch called');launchCounter++; done()});
+            stubLaunch = sinon.stub(Benchmark.prototype, 'launch',function(){launchCounter++; done()});
             benchmark.start(1,1,1,1,5);
             assert.equal(spyWarm.callCount, 6);
             restore();
