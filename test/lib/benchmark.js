@@ -1,6 +1,5 @@
 /*global require, describe, it, beforeEach, afterEach*/
-var proxyquire = require('proxyquire'),
-    mocha = require('mocha'),
+var mocha = require('mocha'),
     chai = require('chai'),
     should = chai.should(),
     sinon = require('sinon'),
