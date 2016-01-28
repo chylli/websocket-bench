@@ -1,10 +1,10 @@
 /*global require, describe, it, beforeEach, afterEach*/
-
 var mocha = require('mocha'),
-  chai = require('chai'),
-  should = chai.should(),
-  sinon = require('sinon'),
-  assert = chai.assert;
+    chai = require('chai'),
+    should = chai.should(),
+    sinon = require('sinon'),
+    assert = chai.assert,
+    cp = require('child_process');
 
 var Benchmark = require('../../lib/benchmark.js');
 var benchmark = null;
@@ -40,4 +40,57 @@ describe('Benchmark', function () {
       assert(stub.called);
     });
   });
+    describe('#start', function(){
+        var util = require('util');
+        var EventEmitter = require('events');
+        function MyEmitter() {
+            EventEmitter.call(this);
+        }
+        util.inherits(MyEmitter, EventEmitter);
+        MyEmitter.prototype.send = function(message){
+            if(message.msg == 'run'){
+                this.emit('message', {action: 'done'});
+            }
+        };
+        it('should call launch 1 time',function(done){
+            var stubFork = sinon.stub(cp, 'fork', function(){console.log('fork!');return new MyEmitter();});
+            var stubSetTimeout = sinon.stub(global, 'setTimeout', function(fn){fn()});
+            var spyWarm = sinon.spy(Benchmark.prototype, 'warm');
+            var launchCounter = 0;
+            var stubLaunch;
+            var restore = function(){
+                stubFork.restore();
+                stubFork.restore();
+                stubSetTimeout.restore();
+                spyWarm.restore();
+                stubLaunch.restore();
+            };
+
+            stubLaunch = sinon.stub(Benchmark.prototype, 'launch',function(){launchCounter++; done()});
+            benchmark.start(1,1,1,1,5);
+            assert.equal(launchCounter,1);
+            restore();
+        });
+
+        it('should call warm 6 time',function(done){
+            var stubFork = sinon.stub(cp, 'fork', function(){console.log('fork!');return new MyEmitter();});
+            var stubSetTimeout = sinon.stub(global, 'setTimeout', function(fn){fn()});
+            var spyWarm = sinon.spy(Benchmark.prototype, 'warm');
+            var launchCounter = 0;
+            var stubLaunch;
+            var restore = function(){
+                stubFork.restore();
+                stubFork.restore();
+                stubSetTimeout.restore();
+                spyWarm.restore();
+                stubLaunch.restore();
+            };
+
+            stubLaunch = sinon.stub(Benchmark.prototype, 'launch',function(){launchCounter++; done()});
+            benchmark.start(1,1,1,1,5);
+            assert.equal(spyWarm.callCount, 6);
+            restore();
+        });
+
+    });
 });
